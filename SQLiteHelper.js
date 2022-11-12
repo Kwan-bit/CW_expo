@@ -1,35 +1,49 @@
 import {openDatabase} from "expo-sqlite";
 
-const db = openDatabase("MainDB")
+const db = openDatabase("CW_expo_DB");
 
-function openDB() {
-    const createTables = () => {
-        db.transaction(tx => {
-            tx.executeSql(
-                "CREATE TABLE IF NOT EXISTS Test (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "name VARCHAR, " +
-                "destination VARCHAR, " +
-                "date VARCHAR, " +
-                "risk VARCHAR, " +
-                "description VARCHAR);",
-                [],
-                (tx, res) => {
-                    console.log("Table created successfully");
-                },
-                error => {
-                    console.log("Error on creating table " + error.message);
-                }
-            )
-        })
-    }
+export const createTables = () => {
+    db.transaction((tx) => {
+        tx.executeSql(
+            "CREATE TABLE IF NOT EXISTS f4124f1 (" +
+            "id INTEGER PRIMARY KEY NOT NULL, " +
+            "name VARCHAR, " +
+            "destination VARCHAR, " +
+            "date VARCHAR, " +
+            "risk VARCHAR, " +
+            "description VARCHAR);",
+            [],
+            (tx, res) => {
+                console.log("Table created successfully");
+            },
+            error => {
+                console.log("Error on creating table " + error.message);
+            }
+        );
+    })
+    return db;
 }
 
-export const tripCreate = ({name, destination, date, risk, description}) => {
-    db.transaction(tx => {
+export const tripTestData = ({name, destination, date, risk, description}) => {
+    db.transaction((tx) => {
         tx.executeSql(
-            "INSERT INTO Test (name, destination, date, risk, description) VALUES (?,?,?,?,?);",
-            [name, destination, date, risk, description],
+            "INSERT INTO f4124f1 (name, destination, date, risk, description) VALUES (?,?,?,?,?);",
+            ["Test123456789", "TestDesty123456", "19/11/2001", "Yes", "TestDescrip"],
+            (tx, res) => {
+                console.log("Table created successfully");
+            },
+            error => {
+                console.log("Error on creating table " + error.message);
+            }
+        )
+    })
+}
+
+export const tripCreate = ({tName, tDestination, tDate, tRisk, tDescription}) => {
+    db.transaction((tx) => {
+        tx.executeSql(
+            "INSERT INTO f4124f1 (name, destination, date, risk, description) VALUES (?,?,?,?,?);",
+            [tName, tDestination, tDate, tRisk, tDescription],
             (tx, res) => {
                 console.log("Table created successfully");
             },
@@ -41,8 +55,8 @@ export const tripCreate = ({name, destination, date, risk, description}) => {
 }
 
 export const tripRead = (callBack) => {
-    db.transaction(tx => {
-        tx.executeSql("SELECT * FROM Test;",
+    db.transaction((tx) => {
+        tx.executeSql("SELECT * FROM f4124f1;",
             [],
             (_, {rows: {_array}}) => {
                 callBack(_array);
@@ -52,9 +66,8 @@ export const tripRead = (callBack) => {
 }
 
 export const tripUpdate = ({name, destination, date, risk, description}) => {
-    db.transaction(tx => {
-        tx.executeSql(
-            "UPDATE Test SET " +
+    db.transaction((tx) => {
+        tx.executeSql("UPDATE f4124f1 " +
             "name = ?, " +
             "destination = ?, " +
             "date = ?, " +
@@ -73,11 +86,11 @@ export const tripUpdate = ({name, destination, date, risk, description}) => {
 
 }
 
-export const tripDeleteAll = ({name, destination, date, risk, description}) => {
-    db.transaction(tx => {
+export const tripDeleteAll = (callBack) => {
+    db.transaction((tx) => {
         tx.executeSql(
-            "DELETE * FROM Test;",
-            [id],
+            "delete from f4124f1;",
+            [],
             (tx, res) => {
                 console.log("Table delete successfully");
             },
@@ -88,9 +101,9 @@ export const tripDeleteAll = ({name, destination, date, risk, description}) => {
     })
 }
 export const tripDeleteByID = (id) => {
-    db.transaction(tx => {
+    db.transaction((tx) => {
         tx.executeSql(
-            "DELETE FROM Test WHERE id=?;",
+            "DELETE FROM f4124f1 WHERE id=?;",
             [id],
             (tx, res) => {
                 console.log("Table delete successfully");
