@@ -56,7 +56,7 @@ const TripList = () => {
                     </Text>
                 </View>
                 <View style={styles.column2}>
-                    <Text style={styles.textCard}>{item.date}</Text>
+                    <Text style={styles.textCard}>{new Date(item.date).toLocaleDateString()}</Text>
                     <Text style={styles.textCard}>Require Assessment: {item.risk}</Text>
                 </View>
             </View>

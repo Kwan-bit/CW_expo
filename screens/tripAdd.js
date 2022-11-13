@@ -1,39 +1,55 @@
 import {useState} from "react";
 import {
     Keyboard,
-    Pressable,
+    Pressable, SafeAreaView,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
     View
 } from "react-native";
-import {CheckBox, Dialog, Header} from "@rneui/themed";
+import {CheckBox, Header} from "@rneui/themed";
 import {TextInput} from 'react-native-paper';
 import {tripCreate} from "../SQLiteHelper";
-import TripList from "./tripList";
 import {useNavigation} from "@react-navigation/native";
-
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 const CreateTrip = () => {
     const navigation = useNavigation();
 
     const onCreate = () => {
         try {
-            tripCreate({tName, tDestination, tDate, tRisk, tDescription});
-            tempName(""); tempDestination(""); tempDate("");
-            tempRisk(""); tempDescription("")
+            tripCreate({tName, tDestination, test, tRisk, tDescription});
+            tempName("");
+            tempDestination("");
+            tempDate(new Date())
+            testDate("")
+            tempRisk("");
+            tempDescription("")
             navigation.navigate('List')
         } catch (error) {
             console.log(error)
         }
     }
-    const [checked, boxChecked] = useState(tempRisk)
 
     const [tName, tempName] = useState('');
     const [tDestination, tempDestination] = useState('');
-    const [tDate, tempDate] = useState('');
+    const [tDate, tempDate] = useState(new Date());
+    let [test, testDate] = useState(' ');
     const [tRisk, tempRisk] = useState('');
     const [tDescription, tempDescription] = useState('');
+
+    const [isDisplayDate, setShow] = useState(false);
+
+    const changeSelectedDate = (event, selectedDate) => {
+
+        const currentDate = selectedDate || new Date(tDate);
+        tempDate(currentDate);
+    };
+
+    const onButtonToggle = () => {
+        setShow(isDisplayDate !== true);
+    };
+
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
@@ -73,19 +89,45 @@ const CreateTrip = () => {
                     mode="outlined"
                     theme={{colors: {primary: '#000000'}}}
                 />
-                <TextInput
-                    value={tDate}
-                    style={styles.input}
-                    onChangeText={tempDate}
-                    label={
-                        <Text>
-                            Date of the Trip <Text style={{color: 'red'}}>*</Text>
-                        </Text>
-                    }
-                    placeholder='dd/mm/yyyy'
-                    mode="outlined"
-                    theme={{colors: {primary: '#000000'}}}
-                />
+
+                <Pressable onPress={onButtonToggle}>
+                    <View pointerEvents="none">
+                        <TextInput
+                            value={tDate.toLocaleDateString(undefined, {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                            })}
+                            style={styles.input}
+                            onChangeText={test = tDate.toString()}
+
+                            mode="outlined"
+                            theme={{colors: {primary: '#000000'}}}
+                            editable={false}
+                            selectTextOnFocus={false}
+                        />
+                    </View>
+                </Pressable>
+
+                <SafeAreaView style={isDisplayDate ? styles.testContainer : 0}>
+                    {isDisplayDate && (
+                        <RNDateTimePicker
+                            testID="dateTimePicker"
+                            value={tDate}
+                            mode="date"
+                            is24Hour={true}
+                            format={{day: 'numeric', month: 'long', year: 'numeric'}}
+                            onChange={changeSelectedDate}
+                            display="spinner"
+                            style={{
+                                height: 100,
+                                width: 375,
+                                marginLeft: 20,
+                            }}
+                        />
+                    )}
+                </SafeAreaView>
+
 
                 <Text style={styles.risk}>Require Risk Assessment<Text style={{color: 'red'}}> *</Text></Text>
                 <View style={styles.checkBoxWrapper}>
@@ -93,7 +135,7 @@ const CreateTrip = () => {
                         center
                         title='Yes'
                         checkedIcon='dot-circle-o'
-                        checked={tRisk==='Yes'}
+                        checked={tRisk === 'Yes'}
                         onPress={() => tempRisk('Yes')}
                         tintColors={{true: '#F15927', false: 'black'}}
                         containerStyle={{backgroundColor: 'transparent'}}
@@ -104,7 +146,7 @@ const CreateTrip = () => {
                         center
                         title='No'
                         checkedIcon='dot-circle-o'
-                        checked= {tRisk==='No'}
+                        checked={tRisk === 'No'}
                         onPress={() => tempRisk('No')}
                         containerStyle={{backgroundColor: 'transparent'}}
                         uncheckedIcon='circle-o'
@@ -125,8 +167,7 @@ const CreateTrip = () => {
                 />
 
                 <Pressable
-                    onPress = {onCreate}
-                    onTouchEnd={() => TripList}
+                    onPress={onCreate}
                     style={({pressed}) => [
                         {backgroundColor: pressed ? '#4f4f4f' : 'black'},
                         styles.button
@@ -165,7 +206,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     risk: {
-        marginTop: 30,
+        marginTop: 20,
         marginLeft: 30,
     },
     button: {
@@ -176,7 +217,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 32,
         borderRadius: 4,
         elevation: 3,
-
         marginTop: 50,
         marginLeft: 20
     },
@@ -195,6 +235,14 @@ const styles = StyleSheet.create({
         width: 325,
         marginTop: 20,
         marginBottom: 10,
+    },
+    testContainer: {
+        width: 375,
+        height: 120,
+    },
+    date: {
+        marginTop: 10,
+
     },
 });
 
