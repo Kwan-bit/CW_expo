@@ -2,17 +2,19 @@ import {useCallback, useState} from 'react';
 import {Alert, FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {tripDeleteAll, tripRead} from "../SQLiteHelper";
 import {Card} from 'react-native-elements';
-import {useFocusEffect} from "@react-navigation/native";
+import {useFocusEffect, useNavigation} from "@react-navigation/native";
 import {Header} from "@rneui/themed";
 
-const TripList = () => {
+const TripList = ({ navigation })  => {
     const [lTrip, listTrip] = useState([])
 
     useFocusEffect(
         useCallback(() => {
 
             const getData = () => {
-                try {tripRead(listTrip);}
+                try {
+                    tripRead(listTrip);
+                }
                 catch (error) {console.log(error);}
             };
             getData();
@@ -42,9 +44,34 @@ const TripList = () => {
             ]
         );
 
+    // const navigation = useNavigation();
+    // const goToEdit = (item) => {
+    //     navigation.navigate('Switch', {screen: 'Edit'},
+    //         {
+    //             mName: item.name,
+    //             mDestination: item.destination,
+    //             mDate: item.date,
+    //             mRisk: item.risk,
+    //             mDescription: item.description
+    //     })
+    // };
+
+    let [packet, dataPacket] = useState("")
+
+    const goToEdit = (lTrip) => {
+        console.log(lTrip)
+        // navigation.navigate('Switch', {screen: 'Edit'}, { ...lTrip });
+        navigation.navigate('Switch', {
+            screen: "Edit",
+            params: {
+                    ...lTrip
+            },
+        });
+        // console.log(...data)
+    };
 
     const renderItem = ({item}) => (
-        <Card key={item.id} containerStyle={styles.card}>
+        <Card key={item.id} containerStyle={styles.card} onTouchEnd={()=>goToEdit(item)}>
             <View   style={styles.row}>
                 <Text style={styles.idCard}>{item.id}</Text>
                 <View style={styles.column}>
@@ -99,7 +126,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         shadowColor: "#2d2d2d",
         shadowOpacity: 1,
-        shadowOffset: {width: 5, height: 5},
+        shadowOffset: {width: 4, height: 4},
     },
     item: {
         padding: 10,

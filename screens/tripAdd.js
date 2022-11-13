@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {
+    Alert,
     Keyboard,
     Pressable, SafeAreaView,
     StyleSheet,
@@ -15,19 +16,22 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 const CreateTrip = () => {
     const navigation = useNavigation();
-
     const onCreate = () => {
-        try {
-            tripCreate({tName, tDestination, test, tRisk, tDescription});
-            tempName("");
-            tempDestination("");
-            tempDate(new Date())
-            testDate("")
-            tempRisk("");
-            tempDescription("")
-            navigation.navigate('List')
-        } catch (error) {
-            console.log(error)
+        if (tName.trim().length !== 0  && tDestination.trim().length !== 0 && tRisk.trim().length !== 0) {
+            try {
+                tripCreate({tName, tDestination, test, tRisk, tDescription});
+                tempName("");
+                tempDestination("");
+                tempDate(new Date())
+                testDate("")
+                tempRisk("");
+                tempDescription("")
+                navigation.navigate('List')
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            Alert.alert('Empty field', 'Please fill all requested field!');
         }
     }
 
@@ -39,7 +43,6 @@ const CreateTrip = () => {
     const [tDescription, tempDescription] = useState('');
 
     const [isDisplayDate, setShow] = useState(false);
-
     const changeSelectedDate = (event, selectedDate) => {
 
         const currentDate = selectedDate || new Date(tDate);
@@ -112,11 +115,8 @@ const CreateTrip = () => {
                 <SafeAreaView style={isDisplayDate ? styles.testContainer : 0}>
                     {isDisplayDate && (
                         <RNDateTimePicker
-                            testID="dateTimePicker"
                             value={tDate}
                             mode="date"
-                            is24Hour={true}
-                            format={{day: 'numeric', month: 'long', year: 'numeric'}}
                             onChange={changeSelectedDate}
                             display="spinner"
                             style={{

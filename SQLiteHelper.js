@@ -65,7 +65,20 @@ export const tripRead = (callBack) => {
     })
 }
 
-export const tripUpdate = ({name, destination, date, risk, description}) => {
+// export const tripRead = (callBack) => {
+//     db.transaction((tx) => {
+//         tx.executeSql("SELECT * FROM vrqwrvq2rv1 WHERE id=1;",
+//             [],
+//             (_, {rows: {_array}}) => {
+//                 callBack(_array);
+//             }
+//         );
+//     })
+// }
+
+
+
+export const tripUpdate = ({rName, rDestination, rTest, rRisk, rDescription}) => {
     db.transaction((tx) => {
         tx.executeSql("UPDATE vrqwrvq2rv1 " +
             "name = ?, " +
@@ -74,7 +87,7 @@ export const tripUpdate = ({name, destination, date, risk, description}) => {
             "risk = ?, " +
             "description = ? " +
             "WHERE id = ?;",
-            [name, destination, date, risk, description],
+            [rName, rDestination, rTest, rRisk, rDescription],
             (tx, res) => {
                 console.log("Update created successfully");
             },
@@ -100,11 +113,11 @@ export const tripDeleteAll = (callBack) => {
         )
     })
 }
-export const tripDeleteByID = (id) => {
+export const tripDeleteByID = (rId) => {
     db.transaction((tx) => {
         tx.executeSql(
             "DELETE FROM vrqwrvq2rv1 WHERE id=?;",
-            [id],
+            [rId],
             (tx, res) => {
                 console.log("Table delete successfully");
             },
