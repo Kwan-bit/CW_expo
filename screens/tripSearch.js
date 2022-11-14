@@ -6,7 +6,7 @@ import {Card} from "react-native-elements";
 import {useFocusEffect} from "@react-navigation/native";
 import {tripRead} from "../SQLiteHelper";
 
-const SearchTrip = () => {
+const SearchTrip = ({navigation}) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredDataSource, setFilteredDataSource] = useState([]);
     const [lTrip, listTrip] = useState([])
@@ -45,8 +45,17 @@ const SearchTrip = () => {
         }
     };
 
+    const goToEdit = (lTrip) => {
+        navigation.navigate('Switch', {
+            screen: "Edit",
+            params: {
+                ...lTrip
+            },
+        });
+    };
+
     const renderSearchItem = ({item}) => (
-        <Card key={item.id} containerStyle={styles.card}>
+        <Card key={item.id} containerStyle={styles.card}  onTouchEnd={()=>goToEdit(item)}>
             <View   style={styles.row}>
                 <Text style={styles.idCard}>{item.id}</Text>
                 <View style={styles.column}>

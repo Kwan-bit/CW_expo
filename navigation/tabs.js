@@ -21,7 +21,7 @@ function MyStack() {
                 tabBarShowLabel: false,
                 headerShown: false,
             }}>
-            <Stack.Screen name="Add" component={CreateTrip}/>
+            <Stack.Screen name="List" component={TripList}/>
             <Stack.Screen name="Edit" component={EditTrip}/>
         </Stack.Navigator>
     );
@@ -69,9 +69,10 @@ const Tabs = () => {
             }}
         >
             <Tab.Screen
-                name={"List"}
-                component={TripList}
+                name={"Switch"}
+                component={MyStack}
                 options={{
+                    initialRouteName: 'List',
                     tabBarIcon: ({focused}) => (
                         <View style={{
                             position: 'absolute',
@@ -93,11 +94,10 @@ const Tabs = () => {
             />
 
             <Tab.Screen
-                name={"Switch"}
-                component={MyStack}
+                name={"Add"}
+                component={CreateTrip}
                 options={{
                     headerShown: false,
-                    initialRouteName: 'Add',
                     tabBarIcon: ({focused}) =>
                         (
                             <Image

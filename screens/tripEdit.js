@@ -1,166 +1,67 @@
-import {useCallback, useEffect, useState} from "react";
+import {useState} from "react";
 import {StyleSheet, View, Text, Keyboard, Pressable, SafeAreaView, TouchableWithoutFeedback, Alert} from "react-native";
-import {Input, CheckBox, Button, Dialog, Header} from "@rneui/themed";
-import RNDateTimePicker, {DateTimePickerAndroid} from "@react-native-community/datetimepicker";
-import {createTables, tripCreate, tripDeleteByID, tripRead, tripReadById, tripUpdate} from "../SQLiteHelper";
+import {CheckBox, Header} from "@rneui/themed";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import {tripDeleteByID, tripUpdate} from "../SQLiteHelper";
 import {TextInput} from "react-native-paper";
-import {useFocusEffect, useNavigation} from "@react-navigation/native";
-import {openDatabase} from "expo-sqlite";
+import {useNavigation} from "@react-navigation/native";
 
 const EditTrip = ({route}) => {
-    const { date, description, destination, id, name, risk } =
+    const {date, description, destination, id, name, risk} =
         route.params;
-    console.log(route)
 
-
-    // const [data, setData] = useState({
-    //     id: id,
-    //     name: name,
-    //     destination: destination,
-    //     date: new Date(),
-    //     description: description,
-    //     risk: risk,
-    // });
-    //
-
-
-    // const onNameChange = (text) => setData({...data, name: text});
-    // const onDestinationChange = (text) => setData({...data, destination: text});
-    // const onDescriptionChange = (text) => setData({...data, description: text});
-    // const onDateChange = (e, date) => setData({...data, date: new Date(date)});
-    // const onRiskAssessmentChange = (value) =>
-    //     setData({...data, risk: value});
-    //
-    // const showMode = () => {
-    //     DateTimePickerAndroid.open({
-    //         value: new Date(),
-    //         onChange: onDateChange,
-    //         mode: "date",
-    //         is24Hour: true,
-    //     });
-    // };
-    //
-    // const onSubmit = () => {
-    //     try {
-    //         if (
-    //             !data.name ||
-    //             !data.destination ||
-    //             !data.date ||
-    //             !data.risk
-    //         ) {
-    //
-    //             return;
-    //         }
-    //         tripUpdate({
-    //             ...data,
-    //             date: `${data.date.getDate()}/${data.date.getMonth()}/${data.date.getFullYear()}`,
-    //         });
-    //
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-    //
-    // const onDelete = () => {
-    //     try {
-    //         tripDeleteByID(id);
-    //         navigation.goBack();
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-//======================================================================================================
-//     const db = openDatabase("CW_expo_DB");
-//     const tripReadById = () => {
-//         db.transaction((tx) => {
-//             tx.executeSql(
-//                 "SELECT * FROM vrqwrvq2rv1 WHERE id=1;",
-//                 [],
-//                 (tx, res) => {
-//                     const len = res.rows.length;
-//                     if (len > 0) {
-//                         let results = [];
-//                         for (let i = 0; i < len; i++) {
-//                             let item = res.rows.item(i);
-//                             results.push({name: item.name, destination: item.destination, date: item.date
-//                                 , risk: item.risk, description: item.description});
-//                         }
-//                         reTrip(results);
-//                         console.log(rTrip)
-//                     }
-//                 }
-//             )
-//         })}
-//
-
-    // useEffect(() => {
-    //     const loadData = async () => {
-    //         await tripReadById();
-    //     };
-    //     loadData();
-    // }, []);
-    //
-    //
     const navigation = useNavigation();
-    //
-    const [rTrip, reTrip] = useState([])
-    const [rId, reId] = useState('1');
+
     const [rName, reName] = useState(name);
     const [rDestination, reDestination] = useState(destination);
-    const [rDate, reDate] = useState(new Date());
+    const [rDate, reDate] = useState(new Date(date));
     let [rTest, reTestDate] = useState('');
     const [rRisk, reRisk] = useState(risk);
     const [rDescription, reDescription] = useState(description);
 
     const [isDisplayDate, setShow] = useState(false);
-    const [tDate, tempDate] = useState(new Date());
-    const changeSelectedDate = (event, selectedDate) => {
 
-        const currentDate = selectedDate || new Date(tDate);
-        tempDate(currentDate);
+    const changeSelectedDate = (event, selectedDate) => {
+        const currentDateData = selectedDate || new Date(rDate);
+        reDate(currentDateData);
     };
 
     const onButtonToggle = () => {
         setShow(isDisplayDate !== true);
     };
 
-    // const onDeleteID = () => {
-    //     try {
-    //         tripDeleteByID(id);
-    //         navigation.goBack();
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-    //
+    const onDelete = () => {
+        try {
+            tripDeleteByID(id);
+            navigation.navigate('List')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const confirmDelete = () =>
         Alert.alert(
-            "Delete all trips",
-            "Are you sure to delete all trips in list ?",
+            "Delete this trips",
+            "Are you sure to delete "+rName +" information ?",
             [
                 {
                     text: "Cancel",
-                    onPress: () => console.log("Canceled delete all trips!"),
+                    onPress: () => console.log("Canceled delete"),
                     style: "cancel"
                 },
                 {
                     text: "OK",
-                    onPress: (tripDeleteByID(1), navigation.navigate('List'))
+                    onPress: (onDelete)
                 }
             ]
         );
 
     const onUpdate = () => {
-        if (rName.trim().length !== 0  && rDestination.trim().length !== 0 && rRisk.trim().length !== 0) {
+        if (rName.trim().length !== 0 && rDestination.trim().length !== 0 && rRisk.trim().length !== 0) {
             try {
-                tripCreate({rName, rDestination, rTest, rRisk, rDescription});
-                reName("");
-                reDestination("");
-                tempDate(new Date())
-                reTestDate("")
-                reRisk("");
-                reDescription("")
+                tripUpdate({id, rName, rDestination, rTest, rRisk, rDescription});
                 navigation.navigate('List')
+                Alert.alert('Done', 'Update success!');
             } catch (error) {
                 console.log(error)
             }
@@ -169,17 +70,13 @@ const EditTrip = ({route}) => {
         }
     }
 
-    const onBackList = () => {
-        navigation.navigate('List')
-    }
-
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
             <View style={styles.container}>
                 <Header
                     centerComponent={{text: 'Edit Trip', style: {color: '#000000', fontSize: 20}}}
                     rightComponent={{
-                        icon: 'delete', color: '#000000', paddingRight: 15, size: 25, onPress: () => onBackList()
+                        icon: 'delete', color: '#000000', paddingRight: 15, size: 25, onPress: () => confirmDelete()
                     }}
                     containerStyle={{
                         backgroundColor: '#ffffff',
@@ -215,40 +112,41 @@ const EditTrip = ({route}) => {
                     theme={{colors: {primary: '#000000'}}}
                 />
 
-                {/*<Pressable onPress={onButtonToggle}>*/}
-                {/*    <View pointerEvents="none">*/}
-                {/*        <TextInput*/}
-                {/*            value={data.date.toLocaleDateString(undefined, {*/}
-                {/*                month: 'long',*/}
-                {/*                day: 'numeric',*/}
-                {/*                year: 'numeric'*/}
-                {/*            })}*/}
-                {/*            style={styles.input}*/}
-                {/*            onChangeText={test = (data.date).toString()}*/}
 
-                {/*            mode="outlined"*/}
-                {/*            theme={{colors: {primary: '#000000'}}}*/}
-                {/*            editable={false}*/}
-                {/*            selectTextOnFocus={false}*/}
-                {/*        />*/}
-                {/*    </View>*/}
-                {/*</Pressable>*/}
+                <Pressable onPress={onButtonToggle}>
+                    <View pointerEvents="none">
+                        <TextInput
+                            value={rDate.toLocaleDateString(undefined, {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                            })}
+                            style={styles.input}
+                            onChangeText={rTest = rDate.toString()}
 
-                {/*<SafeAreaView style={isDisplayDate ? styles.testContainer : 0}>*/}
-                {/*    {isDisplayDate && (*/}
-                {/*        <RNDateTimePicker*/}
-                {/*            value={tDate}*/}
-                {/*            mode="date"*/}
-                {/*            onChange={changeSelectedDate}*/}
-                {/*            display="spinner"*/}
-                {/*            style={{*/}
-                {/*                height: 100,*/}
-                {/*                width: 375,*/}
-                {/*                marginLeft: 20,*/}
-                {/*            }}*/}
-                {/*        />*/}
-                {/*    )}*/}
-                {/*</SafeAreaView>*/}
+                            mode="outlined"
+                            theme={{colors: {primary: '#000000'}}}
+                            editable={false}
+                            selectTextOnFocus={false}
+                        />
+                    </View>
+                </Pressable>
+
+                <SafeAreaView style={isDisplayDate ? styles.testContainer : 0}>
+                    {isDisplayDate && (
+                        <RNDateTimePicker
+                            value={rDate}
+                            mode="date"
+                            onChange={changeSelectedDate}
+                            display="spinner"
+                            style={{
+                                height: 100,
+                                width: 375,
+                                marginLeft: 20,
+                            }}
+                        />
+                    )}
+                </SafeAreaView>
 
 
                 <Text style={styles.risk}>Require Risk Assessment<Text style={{color: 'red'}}> *</Text></Text>

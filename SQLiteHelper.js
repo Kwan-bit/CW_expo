@@ -5,7 +5,7 @@ const db = openDatabase("CW_expo_DB");
 export const createTables = () => {
     db.transaction((tx) => {
         tx.executeSql(
-            "CREATE TABLE IF NOT EXISTS vrqwrvq2rv1 (" +
+            "CREATE TABLE IF NOT EXISTS officalCWEXPO (" +
             "id INTEGER PRIMARY KEY NOT NULL, " +
             "name VARCHAR, " +
             "destination VARCHAR, " +
@@ -27,7 +27,7 @@ export const createTables = () => {
 export const tripTestData = ({name, destination, date, risk, description}) => {
     db.transaction((tx) => {
         tx.executeSql(
-            "INSERT INTO vrqwrvq2rv1 (name, destination, date, risk, description) VALUES (?,?,?,?,?);",
+            "INSERT INTO officalCWEXPO (name, destination, date, risk, description) VALUES (?,?,?,?,?);",
             ["Test123456789", "TestDesty123456", "19/11/2001", "Yes", "TestDescrip"],
             (tx, res) => {
                 console.log("Table created successfully");
@@ -42,7 +42,7 @@ export const tripTestData = ({name, destination, date, risk, description}) => {
 export const tripCreate = ({tName, tDestination, test, tRisk, tDescription}) => {
     db.transaction((tx) => {
         tx.executeSql(
-            "INSERT INTO vrqwrvq2rv1 (name, destination, date, risk, description) VALUES (?,?,?,?,?);",
+            "INSERT INTO officalCWEXPO (name, destination, date, risk, description) VALUES (?,?,?,?,?);",
             [tName, tDestination, test, tRisk, tDescription],
             (tx, res) => {
                 console.log("Table created successfully");
@@ -56,7 +56,7 @@ export const tripCreate = ({tName, tDestination, test, tRisk, tDescription}) => 
 
 export const tripRead = (callBack) => {
     db.transaction((tx) => {
-        tx.executeSql("SELECT * FROM vrqwrvq2rv1;",
+        tx.executeSql("SELECT * FROM officalCWEXPO;",
             [],
             (_, {rows: {_array}}) => {
                 callBack(_array);
@@ -65,29 +65,17 @@ export const tripRead = (callBack) => {
     })
 }
 
-// export const tripRead = (callBack) => {
-//     db.transaction((tx) => {
-//         tx.executeSql("SELECT * FROM vrqwrvq2rv1 WHERE id=1;",
-//             [],
-//             (_, {rows: {_array}}) => {
-//                 callBack(_array);
-//             }
-//         );
-//     })
-// }
 
-
-
-export const tripUpdate = ({rName, rDestination, rTest, rRisk, rDescription}) => {
+export const tripUpdate = ({id, rName, rDestination, rTest, rRisk, rDescription}) => {
     db.transaction((tx) => {
-        tx.executeSql("UPDATE vrqwrvq2rv1 " +
+        tx.executeSql("UPDATE officalCWEXPO SET " +
             "name = ?, " +
             "destination = ?, " +
             "date = ?, " +
             "risk = ?, " +
             "description = ? " +
             "WHERE id = ?;",
-            [rName, rDestination, rTest, rRisk, rDescription],
+            [rName, rDestination, rTest, rRisk, rDescription, id],
             (tx, res) => {
                 console.log("Update created successfully");
             },
@@ -96,13 +84,12 @@ export const tripUpdate = ({rName, rDestination, rTest, rRisk, rDescription}) =>
             }
         )
     })
-
 }
 
 export const tripDeleteAll = (callBack) => {
     db.transaction((tx) => {
         tx.executeSql(
-            "delete from vrqwrvq2rv1;",
+            "DELETE FROM officalCWEXPO;",
             [],
             (tx, res) => {
                 console.log("Table delete successfully");
@@ -113,11 +100,11 @@ export const tripDeleteAll = (callBack) => {
         )
     })
 }
-export const tripDeleteByID = (rId) => {
+export const tripDeleteByID = (id) => {
     db.transaction((tx) => {
         tx.executeSql(
-            "DELETE FROM vrqwrvq2rv1 WHERE id=?;",
-            [rId],
+            "DELETE FROM officalCWEXPO WHERE id=?;",
+            [id],
             (tx, res) => {
                 console.log("Table delete successfully");
             },

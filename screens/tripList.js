@@ -2,7 +2,7 @@ import {useCallback, useState} from 'react';
 import {Alert, FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {tripDeleteAll, tripRead} from "../SQLiteHelper";
 import {Card} from 'react-native-elements';
-import {useFocusEffect, useNavigation} from "@react-navigation/native";
+import {useFocusEffect} from "@react-navigation/native";
 import {Header} from "@rneui/themed";
 
 const TripList = ({ navigation })  => {
@@ -44,30 +44,13 @@ const TripList = ({ navigation })  => {
             ]
         );
 
-    // const navigation = useNavigation();
-    // const goToEdit = (item) => {
-    //     navigation.navigate('Switch', {screen: 'Edit'},
-    //         {
-    //             mName: item.name,
-    //             mDestination: item.destination,
-    //             mDate: item.date,
-    //             mRisk: item.risk,
-    //             mDescription: item.description
-    //     })
-    // };
-
-    let [packet, dataPacket] = useState("")
-
     const goToEdit = (lTrip) => {
-        console.log(lTrip)
-        // navigation.navigate('Switch', {screen: 'Edit'}, { ...lTrip });
         navigation.navigate('Switch', {
             screen: "Edit",
             params: {
                     ...lTrip
             },
         });
-        // console.log(...data)
     };
 
     const renderItem = ({item}) => (
