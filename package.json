@@ -23,6 +23,7 @@
     "my-react-native-base": "^2.15.63",
     "react": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-dropdown-picker": "^5.4.3",
     "react-native-elements": "^3.4.2",
     "react-native-modal-datetime-picker": "^14.0.0",
     "react-native-paper": "^4.12.5",

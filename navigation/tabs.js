@@ -6,10 +6,12 @@ import plus from '../assets/plus.png'
 import edit from '../assets/edit.png'
 import {FontAwesome5} from '@expo/vector-icons'
 import TripList from "../screens/tripList";
-import {tripTestData} from "../SQLiteHelper";
+import {expenseCreateTest} from "../SQLiteHelper";
 import CreateTrip from "../screens/tripAdd";
 import SearchTrip from "../screens/tripSearch";
 import EditTrip from "../screens/tripEdit";
+import ExpenseList from "../screens/expenseList";
+import CreateExpense from "../screens/expenseAdd";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -23,6 +25,9 @@ function MyStack() {
             }}>
             <Stack.Screen name="List" component={TripList}/>
             <Stack.Screen name="Edit" component={EditTrip}/>
+            <Stack.Screen name="Expense" component={ExpenseList}/>
+            <Stack.Screen name="AddExpense" component={CreateExpense}/>
+            <Stack.Screen name="ExpenseEdit" component={EditTrip}/>
         </Stack.Navigator>
     );
 }
@@ -155,7 +160,8 @@ function EmptyScreen() {
     return (
         <Pressable
             style={styles.button2}
-            onPress={tripTestData}>
+            // onPress={tripTestData}>
+            onPress={expenseCreateTest}>
             <Text style={styles.text}>Test</Text>
         </Pressable>
     );

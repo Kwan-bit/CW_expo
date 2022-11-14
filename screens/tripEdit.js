@@ -2,7 +2,7 @@ import {useState} from "react";
 import {StyleSheet, View, Text, Keyboard, Pressable, SafeAreaView, TouchableWithoutFeedback, Alert} from "react-native";
 import {CheckBox, Header} from "@rneui/themed";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import {tripDeleteByID, tripUpdate} from "../SQLiteHelper";
+import {expenseDeleteByID, tripDeleteByID, tripUpdate} from "../SQLiteHelper";
 import {TextInput} from "react-native-paper";
 import {useNavigation} from "@react-navigation/native";
 
@@ -33,6 +33,7 @@ const EditTrip = ({route}) => {
     const onDelete = () => {
         try {
             tripDeleteByID(id);
+            expenseDeleteByID()
             navigation.navigate('List')
         } catch (error) {
             console.log(error)
@@ -42,7 +43,7 @@ const EditTrip = ({route}) => {
     const confirmDelete = () =>
         Alert.alert(
             "Delete this trips",
-            "Are you sure to delete "+rName +" information ?",
+            "Are you sure to delete " + rName + " information ?",
             [
                 {
                     text: "Cancel",
@@ -69,6 +70,15 @@ const EditTrip = ({route}) => {
             Alert.alert('Empty field', 'Please fill all requested field!');
         }
     }
+
+    const goToExpense = (trip_id) => {
+        navigation.navigate('Switch', {
+            screen: "Expense",
+            params: {
+                trip_id
+            },
+        });
+    };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
@@ -195,6 +205,15 @@ const EditTrip = ({route}) => {
                     <Text style={styles.text}>Add To Database</Text>
                 </Pressable>
 
+                <Pressable
+                    onPress={() => goToExpense(id)}
+                    style={({pressed}) => [
+                        {backgroundColor: pressed ? '#4f4f4f' : 'black'},
+                        styles.button2
+                    ]}>
+                    <Text style={styles.text}>See all Expenses</Text>
+                </Pressable>
+
             </View>
         </TouchableWithoutFeedback>
 
@@ -238,6 +257,17 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         marginTop: 50,
+        marginLeft: 20
+    },
+    button2: {
+        width: 375,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        marginTop: 10,
         marginLeft: 20
     },
     text: {

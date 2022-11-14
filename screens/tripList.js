@@ -1,11 +1,11 @@
 import {useCallback, useState} from 'react';
 import {Alert, FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import {tripDeleteAll, tripRead} from "../SQLiteHelper";
+import {expenseDeleteAll, tripDeleteAll, tripRead} from "../SQLiteHelper";
 import {Card} from 'react-native-elements';
 import {useFocusEffect} from "@react-navigation/native";
 import {Header} from "@rneui/themed";
 
-const TripList = ({ navigation })  => {
+const TripList = ({navigation}) => {
     const [lTrip, listTrip] = useState([])
 
     useFocusEffect(
@@ -14,16 +14,20 @@ const TripList = ({ navigation })  => {
             const getData = () => {
                 try {
                     tripRead(listTrip);
+                } catch (error) {
+                    console.log(error);
                 }
-                catch (error) {console.log(error);}
             };
             getData();
-            return () => {listTrip([])};
+            return () => {
+                listTrip([])
+            };
         }, [])
     );
 
     const deleteList = () => {
         tripDeleteAll(listTrip);
+        expenseDeleteAll()
         listTrip([]);
     }
 
@@ -48,14 +52,14 @@ const TripList = ({ navigation })  => {
         navigation.navigate('Switch', {
             screen: "Edit",
             params: {
-                    ...lTrip
+                ...lTrip
             },
         });
     };
 
     const renderItem = ({item}) => (
-        <Card key={item.id} containerStyle={styles.card} onTouchEnd={()=>goToEdit(item)}>
-            <View   style={styles.row}>
+        <Card key={item.id} containerStyle={styles.card} onTouchEnd={() => goToEdit(item)}>
+            <View style={styles.row}>
                 <Text style={styles.idCard}>{item.id}</Text>
                 <View style={styles.column}>
                     <Text style={styles.textCard}>
@@ -77,7 +81,7 @@ const TripList = ({ navigation })  => {
     return (
         <View style={styles.container}>
             <Header
-                centerComponent={{ text: 'All Trips', style: { color: '#000000', fontSize: 20 } }}
+                centerComponent={{text: 'All Trips', style: {color: '#000000', fontSize: 20}}}
                 rightComponent={{
                     icon: 'delete', color: '#000000', paddingRight: 15, size: 25, onPress: () => confirmAlert()
                 }}
